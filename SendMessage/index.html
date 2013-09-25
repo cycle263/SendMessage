@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-Transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<meta name="author" content="cycle.y.chen@newegg.com">
+		<meta http-equiv="Access-Control-Allow-Methods" content="*">
+		<meta name="keywords" content="newegg, it, ajax, message" />
+		<title>Newegg Tech Message Page</title>
+
+		<style type="text/css">
+			a, input, button, div{outline-style: none;}
+			body{margin: 0 auto;padding: 0;width: 1024px;font: 13px/1.1 Georgia, Sans-serif;color:#638da3;outline-style: none;}
+
+			/*页面头部按钮样式*/
+			.banner{background: #c3e4f7 url(images/sample01_01.png);width: 1024;height: 98px;}
+			.header{width: 993px;height: 53px;margin:0 auto;margin-top:10px;background: #f1f1f1;text-align: right;line-height: 53px;
+					-ms-border-radius: 2px;-moz-border-radius: 2px;-o-border-radius: 2px;-webkit-border-radius: 2px;border-radius: 2px;
+					-ms-box-shadow: 2px 2px 2px gray;-moz-box-shadow: 2px 2px 2px gray;-webkit-box-shadow: 2px 2px 2px gray;box-shadow: 2px 2px 2px gray;padding-right: 1em;}								
+			.header-btn{border-radius: 5px;background-color: #f0f4f4;height: 30px;width: 90px;color:#006666;cursor:pointer;
+				box-shadow: 0 0 0 1px #afafaf, 0 0 0 3px #ffffff, 0 0 0 5px #dedede;margin-right: 10px;}
+			.header-btn:enabled{background:#f0f4f4;color:#006666;}
+			.header-btn:disabled{background:#eee;color:#ccc;}
+			/*.header-btn:active{background: #c0e0f0;}*/
+
+			/*页面table表格样式*/
+			.main-table{width: 993px;margin: 30px auto;border-collapse: collapse;margin-bottom: 15px;overflow:hidden;text-align:left;}
+			.main-table tr:hover{background-color: #eaeff3;}
+			.main-table tr input{width:30px;}
+			table tr:hover{background-color: #eaeff3;}
+			/*.main-table tr:active{background-color: #33a9d5;color:#fff;}*/
+			.main-table td{height: 33px;border: 1px solid #eee;border-left: none;border-right: none;max-width:645px;min-width:30px;}
+			.main-table tr td:nth-child(1){width:30px;}
+			.td-phonenum{width:130px;}
+			.td-content div{padding-right: 2em;white-space: nowrap;text-overflow: ellipsis;padding-left:3px;
+			             width: 645px;line-height: 33px;overflow: hidden;}
+			.td-sendtime{width:168px;white-space:nowrap;text-align:right;}
+			.main-table tr td:nth-child(5){width:30px;padding-left:8px;}
+
+			/*删除图标和多选图标样式*/			
+			.close{position: relative;cursor:pointer;background-color: rgba(0,0,0,0.3);border-radius: 7px;width: 14px;height: 14px;height:18px\;cursor:pointer;
+					-moz-transform: rotate(45deg);
+				   	-webkit-transform: rotate(45deg);
+				   	-o-transform: rotate(45deg);
+				   	-ms-transform: rotate(45deg);
+				   	transform: rotate(45deg);   }
+			.close:hover{background-color: #6a6a6a;}
+			.close div:nth-child(1){width: 2px;height: 10px;background-color: #fff;position:absolute;left: 6px;top:2px;}
+			.close div:nth-child(2){width: 10px;height: 2px;background-color: #fff;position:absolute;left: 2px;top:6px;}
+
+			/*display第一条opera、firefox、chrome、safari识别，第二条ie7、id8识别，最后都识别，只有ie6应用(!important)*/
+			.main-table input[type=checkbox]{display: none; display: inline-block\9;}
+			.main-table input[type=checkbox] + label:before{content:'';display:inline-block;width: 14px;height: 14px;background:#ababab;border: 1px solid rgba(0,0,0,0.5);border-radius: 4px;display: none\9;}
+			.main-table input[type=checkbox]:checked + label:after{content:'\2713';color:white;position: relative;left: -14px;top:-2px;font-size: 14px;}
+
+			/*高度行样式*/
+			.light-line{background-color: #33a9d5;}
+
+			/*加载进度样式*/
+			.progress{position: fixed;width: 40px;height: 24px;margin: 0 auto;left: 49%;top: 166px;z-index:9999;}
+			.progress img{width: 40px;height: 24px;}	
+
+
+			/*短信详情\发送短信*/
+			#details,#sendMsg{display:none;position: fixed;width: 980px;height: 400px;top: 50%;margin-top: -200px;z-index: 100;background: #eff;
+			                  box-shadow: 2px 4px 3px 2px rgba(200,200,100,0.8), -1px -1px 2px orange;border-radius: 6px;padding-left: 2em;padding-right: 1em;line-height: 1.8em;}
+			h2{text-align: center;color: #8888ff;text-shadow:2px 4px 3px #d4d4ff;font-size: 32px;}
+			#details div:nth-child(4){padding-bottom: 5em;padding-right: 2em;}
+			.infoName{float: left;margin-right: 1em;color: orange;font-size: 16px;font-style: italic;font-weight: 600;}
+			.infoContent{margin-bottom: 20px;}
+			#deContent{min-height: 7em;padding-left:145px;}
+			#deSendTime{padding-left:145px;}
+						
+			#sendMsg input[type=text]{margin-left:1em;border: 1px solid rgba(6,6,6,0.3);border-radius: 3px;height: 24px;box-shadow: 0 1px 1px 1px #afafaf;font-size: 16px;color: #638da3;}
+			#sendMsg div{margin: 0 auto; width: 240px;margin-top: 6em;margin-bottom: 6em;}
+			#sendMsg div span{font-size: 24px;font-style: italic;position: relative;top:4px;}
+			#inputNum{position:relative;left:-5px;}
+			#tipInfo{display: inline;color: red;position: absolute;top:40px;left: 628px;font-size: 16px;}
+			#submitMsg{position: relative;color: #fff;background-color: #D47FFF;font-size: 3em;padding: 8px;border:none;width: 180px;left: 410px;cursor:pointer;
+				-webkit-border-radius: 8px;
+				-ms-border-radius:8px;
+				-o-border-radius:8px;
+			    -moz-border-radius: 8px;
+			    border-radius: 8px;
+			    -webkit-box-shadow: 0px 9px 0px rgba(200,91,255,1), 0px 9px 25px rgba(0,0,0,.7);
+    			-moz-box-shadow: 0px 9px 0px rgba(200,91,255,1), 0px 9px 25px rgba(0,0,0,.7);
+    			-ms-box-shadow: 0px 9px 0px rgba(200,91,255,1), 0px 9px 25px rgba(0,0,0,.7);
+    			-o-box-shadow: 0px 9px 0px rgba(200,91,255,1), 0px 9px 25px rgba(0,0,0,.7);
+    			box-shadow: 0px 9px 0px rgba(200,91,255,1), 0px 9px 25px rgba(0,0,0,.7);
+
+    			-webkit-transition: all .1s ease;
+				-moz-transition: all .1s ease;
+				-ms-transition: all .1s ease;
+				-o-transition: all .1s ease;
+				transition: all .1s ease;
+
+				-webkit-text-shadow:1px 2px 4px white;
+				-moz-text-shadow:1px 2px 4px white;
+				-ms-text-shadow:1px 2px 4px white;
+				-o-text-shadow:1px 2px 4px white;
+				text-shadow:1px 2px 4px white;
+			}
+			#submitMsg:active{
+				-webkit-box-shadow: 0px 3px 0px rgba(200,91,255,1), 0px 3px 5px rgba(0,0,0,.8);
+    			-moz-box-shadow: 0px 3px 0px rgba(200,91,255,1), 0px 3px 5px rgba(0,0,0,.8);
+    			-ms-box-shadow: 0px 3px 0px rgba(200,91,255,1), 0px 3px 5px rgba(0,0,0,.8);
+    			-o-box-shadow: 0px 3px 0px rgba(200,91,255,1), 0px 3px 5px rgba(0,0,0,.8);
+    			box-shadow: 0px 3px 0px rgba(200,91,255,1), 0px 3px 5px rgba(0,0,0,.8);
+    			top: 6px;
+			}
+			.closeBtn{cursor:pointer;position: absolute;top:5px;right: 8px;background: gray url(images/imgclose.jpg) no-repeat;width: 20px !important;height: 21px;}
+			#closeMsg{top:-73px;}
+
+			/*页脚分页样式*/
+			#footer{width: 1024px;height: 40px;background-color: #EDCBFE;text-align: center;
+			        margin-bottom: 2em;border-radius: 0 0 38px 38px;line-height: 40px;word-spacing: 5px;letter-spacing: 1px;color: #7F00FF;
+			        text-shadow:1px 2px 3px black;font-size: 18px;margin-top: 2em;font-weight: 700;-ms-border-radius:8px;}
+		
+		</style>
+
+		<!--[if lte IE 8]>
+		<style type="text/css">	
+			table td{max-width:620px;margin-right:10px;padding:5px;}	
+			.close{background:url(images/close.png) no-repeat;}
+			.close div{display:none;}
+		
+		</style>
+		<![endif]-->
+
+	</head>
+	<body>
+		<div id="progress" class="progress"><img id="progress-img" title="loading..." src="images/loading.gif" alt="loading..." /></div>
+		<div class="banner">
+			<!-- <img src=""> -->
+		</div>
+		<!-- main -->
+		<div class="header">
+			<input id="allBtn" class="header-btn" type="button" value="全    选" />
+			<input id="delBtn" class="header-btn" type="button" value="删    除" />
+			<input id="allDelBtn" class="header-btn" type="button" value="全部删除" />
+			<input id="refBtn" class="header-btn" type="button" value="刷    新" />
+			<input id="sendBtn" class="header-btn" type="button" value="发送短信" />
+		</div>
+		<!-- main end -->
+		<!-- main -->
+		<div id="main">
+			<table class="main-table">				
+				
+			</table>			
+		</div>
+		<!-- main end -->
+
+		<div id="footer"> 
+			<span>CopyRight® 2013 Newegg-Tech All Rights Reserved</span>
+		</div>
+
+		<!-- details start -->
+		<div id="details">
+			<h2>Message details</h2>
+			<div class="infoName">Phone Number: </div><p id="dePhoneNum" class="infoContent"></p>
+			<div class="infoName">Content: </div><p id="deContent" class="infoContent"></p>
+			<div class="infoName">Send Time: </div><p id="deSendTime" class="infoContent"></p>
+			<div class="closeBtn"></div>
+		</div>		
+		<!-- details end -->
+
+		<!-- sendMsg start -->
+		<div id="sendMsg">
+			<h2>Send Message</h2>
+			<div>
+				<span>To</span>
+				<input id="inputNum" type="text" class="" />				
+			</div>
+			<div id="tipInfo" value="13438912202">SMS will be charged</div>
+			<input id="submitMsg" type="button" value="Send" />
+			<div id="closeMsg" class="closeBtn"></div>
+		</div>
+		<!-- sendMsg end -->
+
+		<script type="text/javascript" src="Javascript/message.js"></script>
+	</body>
+</html>
